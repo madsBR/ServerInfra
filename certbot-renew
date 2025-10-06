@@ -1,0 +1,11 @@
+[Unit]
+Description=Renew Let's Encrypt certs (docker compose) and reload nginx
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/website-host/certbot
+ExecStart=/usr/bin/docker compose -f dc-front-proxy.yml run --rm certbot renew --webroot -w /var/www/certbot --quiet --no-random-sleep-on-renew
+# Ignore reload failure if nginx is not up
+ExecStartPost=-/usr/bin/docker compose -f dc-front-proxy.yml exec nginx nginx -s reload

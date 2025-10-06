@@ -1,0 +1,34 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./conf/nginx-cert.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/letsencrypt:ro
+      - ./acme-webroot:/var/www/certbot:ro
+    networks:
+      - TyrsbjergNet
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    depends_on:
+      - nginx
+    volumes:
+     - ./acme-webroot:/var/www/certbot:rw
+     - ./certs:/etc/letsencrypt
+    command: sh -c 'while true; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h; done'
+    networks:
+      - TyrsbjergNet
+
+
+
+networks:
+  TyrsbjergNet:
+    name: TyrsbjergNet 
+    driver: bridge    
+
