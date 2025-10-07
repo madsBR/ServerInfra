@@ -1,0 +1,16 @@
+[Unit]
+Description=Front proxy (nginx + redis) via Docker Compose
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/madsbr/certbot
+ExecStart=/usr/bin/docker compose -f dc-front-proxy.yml up -d
+# Stop only these services; keeps other services (e.g., certbot) running
+ExecStop=/usr/bin/docker compose -f dc-front-proxy.yml stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

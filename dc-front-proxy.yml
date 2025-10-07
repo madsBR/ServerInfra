@@ -21,14 +21,20 @@ services:
     volumes:
      - ./acme-webroot:/var/www/certbot:rw
      - ./certs:/etc/letsencrypt
-    command: sh -c 'while true; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h; done'
-    networks:
-      - TyrsbjergNet
+    command: renew --webroot -w /var/www/certbot --quiet
+    #Keep it out of `docker compose up` by default
+    profiles: ["manual"]
 
+  redis:
+    image: redis:alpine
+    networks:
+      - TyrsbjergRedis
 
 
 networks:
   TyrsbjergNet:
     name: TyrsbjergNet 
     driver: bridge    
-
+  TyrsbjergRedis:
+    name: TyrsbjergRedis 
+    driver: bridge    
