@@ -6,7 +6,7 @@ Requires=docker.service
 
 [Service]
 Type=oneshot
-WorkingDirectory=/home/madsbr/certbot
+WorkingDirectory=/home/website-host/certbot
 ExecStart=/usr/bin/docker compose -f dc-front-proxy.yml up -d
 # Stop only these services; keeps other services (e.g., certbot) running
 ExecStop=/usr/bin/docker compose -f dc-front-proxy.yml stop
